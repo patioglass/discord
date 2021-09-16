@@ -5,6 +5,8 @@ const options = {
 };
 const client = new Client(options);
 
+const MAX_WORD_NUM = 28;
+
 client.login(process.env.DISCORD_BOT_TOKEN);
 
 client.on('ready', message =>{
@@ -42,8 +44,6 @@ client.on("messageCreate", message => {
         } else if (splitNum.length === 2) {
             const min = parseInt(splitNum[0]);
             const max = parseInt(splitNum[1]);
-            console.log(min);
-            console.log(max);
             if ((min && max) && min <= max) {
                 message.reply(createRandomEmojis(min, max, emojiInfo)).then(() => {
                     console.log("success");
@@ -71,8 +71,8 @@ function getHelpMessage() {
     return `
         emoji-masterの使い方\n
         @emoji-master help\t:emoji-masterの使い方\n
-        @emoji-master slot\t:1~30文字のカスタム絵文字をランダムに錬成する
-        @emoji-master [n]-[m]\t:n文字~m文字のカスタム絵文字をランダムに錬成する（max:30）
+        @emoji-master slot\t:1~${MAX_WORD_NUM}文字のカスタム絵文字をランダムに錬成する
+        @emoji-master [n]-[m]\t:n文字~m文字のカスタム絵文字をランダムに錬成する（max:${MAX_WORD_NUM}）
     `;
 }
 
@@ -84,8 +84,8 @@ function getHelpMessage() {
 function createRandomEmojis(min, max, emojis) {
     let randomEmojis = "";
     // min~max文字
-    if (max > 30) {
-        max = 30;
+    if (max > MAX_WORD_NUM) {
+        max = MAX_WORD_NUM;
     }
     const loopNum = Math.floor( Math.random() * (max + 1 - min) ) + min ;
     for (i = 0; i < loopNum; i++) {
