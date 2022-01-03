@@ -30,7 +30,8 @@ client.on("messageCreate", message => {
         emojis.map((guildEmoji) => {
             emojiInfo.push({
                 "id": guildEmoji.id,
-                "name": guildEmoji.name
+                "name": guildEmoji.name,
+		"animated": guildEmoji.animated
             });
         })
         if (order[1] === "slot") {
@@ -41,7 +42,13 @@ client.on("messageCreate", message => {
                 console.log("success");
             }).catch(console.error)
 
-        } else if (splitNum.length === 2) {
+        } else if (order[1] === "omikuji") {
+	    // omikuji
+            const omikujiEmoji = emojiInfo.filter(emoji => {return (emoji.name.match(/omikuji/))});
+	    message.reply(drawOmikuji(omikujiEmoji)).then(() => {
+	        console.log("omikuji success");
+	    }).catch(console.error)
+	} else if (splitNum.length === 2) {
             const min = parseInt(splitNum[0]);
             const max = parseInt(splitNum[1]);
             if ((min && max) && min <= max) {
@@ -72,6 +79,7 @@ function getHelpMessage() {
         emoji-masterの使い方\n
         @emoji-master help\t:emoji-masterの使い方\n
         @emoji-master slot\t:1~${MAX_WORD_NUM}文字のカスタム絵文字をランダムに錬成する
+	@emoji-master omikuji\t draw a omikuji
         @emoji-master [n]-[m]\t:n文字~m文字のカスタム絵文字をランダムに錬成する（max:${MAX_WORD_NUM}）
     `;
 }
@@ -91,7 +99,18 @@ function createRandomEmojis(min, max, emojis) {
     for (i = 0; i < loopNum; i++) {
         // ランダムな絵文字取得
         const randomNum = Math.floor( Math.random() * ((emojis.length - 1) + 1 - 0) ) + 0;
-        randomEmojis += `<:${emojis[randomNum].name}:${emojis[randomNum].id}>`;
+        const animePrefix = emojis[randomNum].animated ? "a" : "";
+        randomEmojis += `<${animePrefix}:${emojis[randomNum].name}:${emojis[randomNum].id}>`;
     }
     return randomEmojis;
+}
+
+/**
+ * @param [{id,name}...]
+ * @retrun {string}
+ */
+function drawOmikuji(omikujiEmoji) {
+    const resultOmikuji = omikujiEmoji[Math.floor(Math.random() * omikujiEmoji.length)];
+    const animePrefix = resultOmikuji.animated ? "a" : "";
+    return `<${animePrefix}:${resultOmikuji.name}:${resultOmikuji.id}>`;
 }

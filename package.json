@@ -10,6 +10,6 @@
   "author": "patioglass",
   "license": "MIT",
   "dependencies": {
-    "discord.js": "^13.1.0"
+    "discord.js": "^13.5.0"
   }
 }
